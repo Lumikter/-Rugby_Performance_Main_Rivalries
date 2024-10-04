@@ -1,0 +1,498 @@
+---------- History of Rugby ----------
+
+import matplotlib as mpt
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+import numpy as np
+
+plt.figure(figsize=(27,7))
+
+sns.lineplot(
+    data=dataset,
+    x='Año',
+    y='Total_Matches',
+    linewidth=4,
+    hue='hemisferio'
+)
+sns.regplot(
+    data=dataset,
+    x='Año',
+    y='Total_Matches',
+    scatter=False,
+    color='black',
+    line_kws={'linestyle': '--'}
+)
+
+future_years_start = 2025
+future_years_end = 2030
+
+years = np.array(dataset['Año']).reshape(-1, 1)
+hemisferios = dataset['hemisferio'].unique()
+
+# Haremos una regresión lineal para cada hemisferio
+for hemisferio in hemisferios:
+    # Filtramos por hemisferio
+    hemisferio_data = dataset[dataset['hemisferio'] == hemisferio]
+    
+    # Creamos el modelo de regresión
+    X = np.array(hemisferio_data['Año']).reshape(-1, 1)
+    y = np.array(hemisferio_data['Total_Matches'])
+    
+    # Entrenamos el modelo de regresión lineal
+    model = LinearRegression()
+    model.fit(X, y)
+    
+    # Proyección para los años futuros
+    last_year = dataset['Año'].max()
+    future_years = np.arange(future_years_start, future_years_end + 1).reshape(-1, 1)
+    projected_matches = model.predict(future_years)
+    
+    # Dibujar la proyección
+    plt.plot(
+        future_years,
+        projected_matches,
+        linestyle="--",
+        linewidth=3,
+        color='blue' if hemisferio == 'Norte' else 'green',
+        label=f'Proyección {hemisferio}',
+    )
+
+plt.axvline(
+    x=1871,
+    color='#000080',
+    linestyle="-",
+    linewidth=3
+    #label='1871 1º Partido Rugby Internacional'
+)
+plt.axvline(
+    x=1914,
+    color='red',
+    linestyle="--",
+    linewidth=2
+    #label='1914 Inicio 1ª Guerra Mundial'
+)
+plt.axvline(
+    x=1918,
+    color='red',
+    linestyle="--",
+    linewidth=2
+    #label='1918 Fin 1ª Guerra Mundial'
+)
+plt.axvline(
+    x=1939,
+    color='red',
+    linestyle="--",
+    linewidth=2
+    #label='1939 Inicio 2ª Guerra Mundial'
+)
+plt.axvline(
+    x=1945,
+    color='red',
+    linestyle="--",
+    linewidth=2
+    #label='1945 Fin 2ª Guerra Mundial'
+)
+plt.axvline(
+    x=1987,
+    linestyle="-",
+    color='#00845c',
+    linewidth=3
+    #label='1987 1ª Rugby World Cup'
+)
+plt.axvline(
+    x=1995,
+    linestyle="--",
+    color='#00845c',
+    linewidth=2
+    #label='1995 Profesionalizacion del Rugby'
+)
+plt.axvline(
+    x=2012,
+    color='#000080',
+    linestyle="-",
+    linewidth=3
+    #label='1996 Rugby Championship'
+)
+
+plt.axvline(
+    x=2000,
+    color='#000080',
+    linestyle="-",
+    linewidth=3
+    #label='2000 Six Nations Championship'
+)
+
+plt.axvline(
+    x=2020,
+    color='red',
+    linestyle="--",
+    linewidth=2
+    #label='2020 Covid 19'
+)
+
+plt.xticks(fontsize=18, fontfamily='Segoe UI')
+plt.yticks(fontsize=18, fontfamily='Segoe UI')
+
+plt.xlabel(' ')
+plt.ylabel('Total Partidos',fontsize=14, fontfamily='DIN')
+
+plt.annotate(
+    '1º Partido Rugby Internacional',
+    fontsize=18,
+    fontfamily='DIN',
+    xy=(1871, dataset['Total_Matches'].min()), 
+    xytext=(1872, dataset['Total_Matches'].min() + 10),
+    arrowprops=dict(facecolor='black', arrowstyle="->")
+)
+
+plt.annotate(
+    '1ª Guerra Mundial',
+    fontsize=18,
+    fontfamily='DIN',
+    xy=(1915, dataset['Total_Matches'].min()), 
+    xytext=(1920, dataset['Total_Matches'].min() + 20),
+    arrowprops=dict(facecolor='red', arrowstyle="->")
+)
+
+plt.annotate(
+    '2ª Guerra Mundial',
+    fontsize=18,
+    fontfamily='DIN', 
+    xy=(1943, dataset['Total_Matches'].min()), 
+    xytext=(1947, dataset['Total_Matches'].min() + 20),
+    arrowprops=dict(facecolor='red', arrowstyle="->")
+)
+
+plt.annotate(
+    '1ª Rugby World Cup',
+    fontsize=18,
+    fontfamily='DIN', 
+    xy=(1987, dataset['Total_Matches'].min()+5), 
+    xytext=(1967, dataset['Total_Matches'].min() + 30),
+    arrowprops=dict(facecolor='red', arrowstyle="->")
+)
+
+plt.annotate(
+    'Profesionalizacion del Rugby',
+    fontsize=18,
+    fontfamily='DIN',
+    xy=(1995, dataset['Total_Matches'].min()+5), 
+    xytext=(1996, dataset['Total_Matches'].min() + 10),
+    arrowprops=dict(facecolor='red', arrowstyle="->")
+)
+
+plt.annotate(
+    '1º The Rugby Chapionship (Sur)',
+    fontsize=18,
+    fontfamily='DIN',
+    xy=(2012, dataset['Total_Matches'].min()-5), 
+    xytext=(2014, dataset['Total_Matches'].min() + 4),
+    arrowprops=dict(facecolor='red', arrowstyle="->")
+)
+
+plt.annotate(
+    '1º Six Nations Championship (Norte)',
+    fontsize=18,
+    fontfamily='DIN', 
+    xy=(2000, dataset['Total_Matches'].min()-5), 
+    xytext=(1965, dataset['Total_Matches'].min() ),
+    arrowprops=dict(facecolor='red', arrowstyle="->")
+)
+
+plt.annotate(
+    'Covid 19',
+    fontsize=18,
+    fontfamily='DIN', 
+    xy=(2020, dataset['Total_Matches'].min()-5), 
+    xytext=(2025, dataset['Total_Matches'].min()-5 ),
+    arrowprops=dict(facecolor='red', arrowstyle="->")
+)
+
+plt.xticks(range(1870,2031,5),rotation=90)
+plt.legend()
+plt.tight_layout()
+
+plt.xlim(1865, 2030)
+plt.ylim(-8, None) 
+
+plt.show()
+
+
+---------- Acumulated Points by Hemispherie, Results and Location ----------
+
+import pandas as pd
+import matplotlib as mpt
+import matplotlib.pyplot as plt
+
+import seaborn as sns
+
+custom_palette = {'Ganador': '#00845c', 'Perdedor': '#d21034'}
+
+dataset = dataset[(dataset['Resultado'] == 'ganador') | (dataset['Resultado'] == 'perdedor')]
+
+dataset['Resultado'] = dataset['Resultado'].replace({'ganador': 'Ganador', 'perdedor': 'Perdedor'})
+
+g = sns.catplot(
+    data=dataset,
+    x='hemisferio',
+    y='score',
+    hue='Resultado',
+    split=True,
+    kind='violin',
+    height=5,
+    aspect=0.9,
+    col='atributo_team_e',
+    palette = custom_palette,
+)
+
+g.set_xlabels("")
+g.set_ylabels("Score", fontsize=11, fontfamily='DIN')
+
+for ax in g.axes.flat:
+    ax.tick_params(axis='x', labelsize=11)
+    ax.tick_params(axis='y', labelsize=11)
+
+for ax, title in zip(plt.gcf().axes, ['Local', 'Visitante']):
+    ax.set_title(title, fontsize=11, fontfamily='Segoe UI')
+    
+plt.show()
+
+
+---------- Relationship Between Games Played and Victories ----------
+
+import pandas as pd
+import matplotlib as mpt
+import matplotlib.pyplot as plt
+
+import seaborn as sns
+
+colores_paises = {
+    'Sudafrica': '#1b3838',
+    'Nueva Zelanda': 'black',
+    'Italia': '#0052b1',
+    'Irlanda': '#00845c',
+    'Inglaterra': '#808080',
+    'Gales': '#d21034',
+    'Francia': '#003b7c',
+    'Escocia': '#000080',
+    'Australia': '#ffbb00',
+    'Argentina': '#43A1D5'
+}
+
+g = sns.relplot(
+    data=dataset,
+    x='Total_Win',
+    y='Total_Matches',
+    hue='Paises',
+    size='Total_Win',
+    palette= colores_paises,
+    height=6,
+    aspect=1.4,
+    s = 100,
+    sizes=(10, 1200),
+)
+
+for text in g._legend.texts:
+    text.set_text(text.get_text().replace('Total_Win', 'Victorias'))
+    
+plt.grid(True, linestyle = ':', linewidth=1)
+
+plt.xlabel('Victorias',fontsize=14, fontfamily='DIN')
+plt.ylabel('Partidos',fontsize=14, fontfamily='DIN')
+
+plt.xticks(fontsize=11, fontfamily='Segoe UI')
+plt.yticks(fontsize=12, fontfamily='Segoe UI')
+
+plt.show()
+
+
+---------- Distribution of Points by Location ----------
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+colores_paises = {
+    'Sudafrica': '#1b3838',
+    'Nueva Zelanda': 'black',
+    'Italia': '#0052b1',
+    'Irlanda': '#00845c',
+    'Inglaterra': '#808080',
+    'Gales': '#d21034',
+    'Francia': '#003b7c',
+    'Escocia': '#000080',
+    'Australia': '#ffbb00',
+    'Argentina': '#43A1D5'
+}
+
+dataset['atributo_team_e'] = dataset['atributo_team_e'].replace({'local': 'Local', 'visitante': 'Visitante'})
+
+g = sns.catplot(
+    x='atributo_team_e',
+    y='score',
+    hue='Paises',
+#col='hemisferio',
+    data=dataset,
+    kind='box',
+    height=6.5,
+    aspect=1.5,
+    palette=colores_paises
+)
+   
+plt.xlabel(' ')
+plt.ylabel('Score',fontsize=14, fontfamily='DIN')
+
+plt.xticks(fontsize=12, fontfamily='Segoe UI')
+plt.yticks(fontsize=12, fontfamily='Segoe UI')
+
+plt.show()
+
+
+---------- Distribution of Points by Results ----------
+
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+colores_paises = {
+    'Sudafrica': '#1b3838',
+    'Nueva Zelanda': 'black',
+    'Italia': '#0052b1',
+    'Irlanda': '#00845c',
+    'Inglaterra': '#808080',
+    'Gales': '#d21034',
+    'Francia': '#003b7c',
+    'Escocia': '#000080',
+    'Australia': '#ffbb00',
+    'Argentina': '#43A1D5'
+}
+
+dataset['Resultado'] = dataset['Resultado'].replace({'perdedor': 'Perdedor', 'empate': 'Empate','ganador':'Ganador'})
+
+sns.catplot(
+    x='Resultado',
+    y='score',
+    hue='Paises',
+    #col='hemisferio',
+    data=dataset,
+    kind='box',
+    height=6.5,
+    aspect=1.5,
+    palette= colores_paises
+)
+
+plt.xlabel(' ')
+plt.ylabel('Score',fontsize=14, fontfamily='DIN')
+
+plt.xticks(fontsize=11, fontfamily='Segoe UI')
+plt.yticks(fontsize=12, fontfamily='Segoe UI')
+
+plt.show()
+
+
+---------- Victories by Age and Country - Main Competitions ----------
+
+import pandas as pd
+import matplotlib as mpt
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+dataset = dataset[(dataset['competition_general'] == 'Six Nations Championship') | (dataset['competition_general'] == 'Rugby Championship') | (dataset['competition_general'] == 'Rugby World Cup')]
+
+dataset = dataset.pivot_table(index='id_pais_union',columns='Año',values='Total_Win',aggfunc='sum')
+
+#plt.figure(figsize=(16,8))
+if dataset.empty:
+    print("No hay datos para el rango de fechas seleccionado")
+else:
+    sns.heatmap(
+        dataset,
+        annot= True,
+        annot_kws={"fontsize": 9},
+        linewidth=1,
+        square=False,
+        cbar=True,
+        cbar_kws={'orientation': 'horizontal','shrink': 0.9}
+    )
+
+plt.xticks(rotation=90,fontsize=12, fontfamily='Segoe UI')
+plt.yticks(rotation=360,fontsize=12, fontfamily='Segoe UI')
+
+plt.xlabel('')
+plt.ylabel('')
+
+plt.tight_layout(pad=0.5)
+
+plt.show()
+
+
+---------- Country Rivarly ----------
+
+import pandas as pd
+import networkx as nx
+import matplotlib.pyplot as plt
+
+colores_paises = {
+    'Sudafrica': '#1b3838',
+    'Nueva Zelanda': 'black',
+    'Italia': '#0052b1',
+    'Irlanda': '#00845c',
+    'Inglaterra': '#808080',
+    'Gales': '#d21034',
+    'Francia': '#003b7c',
+    'Escocia': '#000080',
+    'Australia': '#ffbb00',
+    'Argentina': '#43A1D5'
+}
+
+# Separar los equipos locales y visitantes
+dataset1 = dataset[dataset['id_atributo_team'] == 1][['id_match', 'Paises']].rename(columns={'Paises': 'local'})
+dataset2 = dataset[dataset['id_atributo_team'] == 0][['id_match', 'Paises']].rename(columns={'Paises': 'visitante'})
+
+# Unir los datasets por 'id_match'
+dataset = pd.merge(dataset1, dataset2, on='id_match')
+dataset = dataset.groupby(['local', 'visitante']).size().reset_index(name='frecuencia')
+dataset_inverso = dataset[['visitante', 'local', 'frecuencia']].rename(columns={'visitante': 'local', 'local': 'visitante'})
+
+# Combinar el dataset original con el dataset inverso
+dataset = pd.concat([dataset, dataset_inverso], axis=0)
+
+# Agrupar nuevamente para sumar la frecuencia de ambas direcciones
+dataset = dataset.groupby(['local', 'visitante']).sum().reset_index()
+
+if dataset.empty:
+    print("No hay datos para el rango de fechas seleccionado")
+else:
+    
+# Crear el grafo
+    G = nx.from_pandas_edgelist(dataset, source ='local', target = 'visitante', edge_attr='frecuencia')
+
+    partidos_por_equipo = dataset.groupby('local')['frecuencia'].sum().to_dict()
+
+# Escalar el tamaño de los nodos de acuerdo al número de partidos
+    node_sizes = [partidos_por_equipo.get(node, 1) * 3.5 for node in G.nodes()]
+
+# Crear layout para posicionar los nodos. Aquí utilizamos un layout ajustado por la cantidad de partidos
+    pos = nx.spring_layout(G, k=3/len(G.nodes()), iterations=10, scale=2, weight='frecuencia', seed=42)  # Distribuir mejor según el tamaño
+
+# Colores de los nodos
+    colors = [colores_paises.get(node, 'white') for node in G.nodes()]
+
+# Dibujar el grafo
+
+    nx.draw(G, pos, with_labels=False, node_color=colors, node_size=node_sizes, edge_color='black', linewidths=2)
+
+# Añadir las etiquetas de los nodos
+#nx.draw_networkx_labels(G, pos, font_size=10, font_color='#BAB9B7')
+
+# Crear las etiquetas de las frecuencias en los bordes
+    edge_labels = nx.get_edge_attributes(G, 'frecuencia')
+    nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels, font_size=8, font_color='red')
+
+# Crear la leyenda personalizada
+for node, color in colores_paises.items():
+    plt.scatter([], [], c=color, label=node, s=100)
+
+plt.legend(scatterpoints=1, frameon=False, title="Paises",fontsize=8,loc='upper right', borderaxespad=0)
+
+plt.tight_layout()
+plt.show()
