@@ -1,0 +1,100 @@
+---------- Total_Win ----------
+
+Total_Win = CALCULATE (
+    COUNT ( results[id_resultado_final] ),
+    results[id_resultado_final] = "0"
+)
+
+---------- Total_Lose ----------
+
+Total_Lose = CALCULATE (
+    COUNT ( results[id_resultado_final] ),
+    results[id_resultado_final] = "1"
+)
+
+---------- Total_Draw ----------
+
+Total_Draw = CALCULATE (
+    COUNT ( results[id_resultado_final] ),
+    results[id_resultado_final] = "2"
+)
+
+---------- Win_Ratio ----------
+
+Win_Ratio = DIVIDE([Total_Win],[Total_Results],0)
+
+
+---------- Lose_Ratio ----------
+
+Lose_Ratio = DIVIDE([Total_Lose],[Total_Results],0)
+
+
+---------- Draw_Ratio ----------
+
+Draw_Ratio = DIVIDE([Total_Draw],[Total_Results],0)
+
+
+---------- Total_Matches ----------
+
+Total_Matches = DISTINCTCOUNT(results[id_match])
+
+
+---------- Total_Results ----------
+
+Total_Results = COUNT(results[id_atributo_team])
+
+
+---------- Total_score ----------
+
+Total_score = SUM(results[score])
+
+
+---------- Total_WRC ----------
+
+Total_WRC = IF (
+    ISBLANK (
+        CALCULATE (
+            DISTINCTCOUNT ( results[CompetetitionYear] ),
+            results[competition_general] = "Rugby World Cup"
+        )
+    ),
+    0,
+    CALCULATE (
+        DISTINCTCOUNT ( results[CompetetitionYear] ),
+        results[competition_general] = "Rugby World Cup"
+    )
+)
+
+
+---------- Total_SNC ----------
+
+Total_SNC = IF (
+    ISBLANK (
+        CALCULATE (
+            DISTINCTCOUNT ( results[CompetetitionYear] ),
+            results[competition_general] = "Six Nations Championship"
+        )
+    ),
+    0,
+    CALCULATE (
+        DISTINCTCOUNT ( results[CompetetitionYear] ),
+        results[competition_general] = "Six Nations Championship"
+    )
+)
+
+
+---------- Total_RC ----------
+
+Total_RC = IF (
+    ISBLANK (
+        CALCULATE (
+            DISTINCTCOUNT ( results[CompetetitionYear] ),
+            results[competition_general] = "Rugby Championship"
+        )
+    ),
+    0,
+    CALCULATE (
+        DISTINCTCOUNT ( results[CompetetitionYear] ),
+        results[competition_general] = "Rugby Championship"
+    )
+)
